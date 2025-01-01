@@ -31,46 +31,24 @@
       <div class="btn btn-primary fs-3">Player 1</div>
       <div class="btn btn-outline-primary fs-2">0</div>
     </div>
-    <div class="container">
-      <div class="d-flex justify-content-center my-3" id="turn-indicator">
-        <span class="btn btn-primary fs-2 fw-bold">Player 1's Turn</span>
+    <div class="d-flex flex-column align-items-center">
+      <div class="d-flex justify-content-center my-3">
+        <span class="btn btn-primary fs-2 fw-bold" id="turn">
+          Player 1's Turn
+        </span>
       </div>
-      <div class="d-flex justify-content-center gap-1 my-3">
-        <div class="d-flex flex-column gap-1">
-          <div class="btn btn-dark d-flex justify-content-center align-items-center" id="grid">
-            
-          </div>
-          <div class="btn btn-dark d-flex justify-content-center align-items-center" id="grid">
-            
-          </div>
-          <div class="btn btn-dark d-flex justify-content-center align-items-center" id="grid">
-            
-          </div>
-        </div>
-        <div class="d-flex flex-column gap-1">
-          <div class="btn btn-dark d-flex justify-content-center align-items-center" id="grid">
-            
-          </div>
-          <div class="btn btn-dark d-flex justify-content-center align-items-center" id="grid">
-            
-          </div>
-          <div class="btn btn-dark d-flex justify-content-center align-items-center" id="grid">
-            
-          </div>
-        </div>
-        <div class="d-flex flex-column gap-1">
-          <div class="btn btn-dark d-flex justify-content-center align-items-center" id="grid">
-            
-          </div>
-          <div class="btn btn-dark d-flex justify-content-center align-items-center" id="grid">
-            
-          </div>
-          <div class="btn btn-dark d-flex justify-content-center align-items-center" id="grid">
-            
-          </div>
-        </div>
+      <div class="d-grid gap-1" id="board">
+          <div class="btn btn-dark" id="grid"></div>
+          <div class="btn btn-dark" id="grid"></div>
+          <div class="btn btn-dark" id="grid"></div>
+          <div class="btn btn-dark" id="grid"></div>
+          <div class="btn btn-dark" id="grid"></div>
+          <div class="btn btn-dark" id="grid"></div>
+          <div class="btn btn-dark" id="grid"></div>
+          <div class="btn btn-dark" id="grid"></div>
+          <div class="btn btn-dark" id="grid"></div>
       </div>
-      <div class="d-flex justify-content-center gap-5 my-3">
+      <div class="d-flex justify-content-center gap-5 my-3 mb-5">
         <div class="btn btn-warning fs-4">Reset Score</div>
         <div class="btn btn-info fs-4">Restart Match</div>
       </div>
