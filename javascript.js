@@ -53,8 +53,11 @@ function GameController() {
 
   const playRound = (selectedGrid) => {
     const [row, column] = selectedGrid.split('')
-    board.placeMarker(row, column, activePlayer.marker)
-    switchPlayerTurn()
+    const grid = document.querySelector(`[data-index='${selectedGrid}']`)
+    if (grid.textContent === '') {
+      board.placeMarker(row, column, activePlayer.marker)
+      switchPlayerTurn()
+    }
   }
 
   return {
