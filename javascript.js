@@ -14,16 +14,7 @@ function GameBoard() {
     board[row][column].markGrid(marker)
   }
 
-  const printBoard = () => {
-    for (const row of board) {
-      console.log(
-        `${row[0].getValue() === '' ? ' ' : row[0].getValue()}|${row[1].getValue() === '' ? ' ' : row[1].getValue()}|${row[2].getValue() === '' ? ' ' : row[2].getValue()}`,
-      )
-      console.log('-----')
-    }
-  }
-
-  return { getBoard, printBoard, placeMarker }
+  return { getBoard, placeMarker }
 }
 
 function Grid() {
@@ -36,4 +27,39 @@ function Grid() {
   }
 
   return { getValue, markGrid }
+}
+
+function GameController() {
+  const board = GameBoard()
+
+  const players = [
+    {
+      name: 'Player 1',
+      marker: 'X'
+    },
+    {
+      name: 'Player 2',
+      marker: 'O'
+    }
+  ]
+
+  let activePlayer = players[0]
+
+  const switchPlayerTurn = () => {
+    activePlayer = activePlayer === players[0] ? players[1] : players[0]
+  }
+
+  const getActivePlayer = () => activePlayer
+
+  const playRound = (selectedGrid) => {
+    const [row, column] = selectedGrid.split('')
+    board.placeMarker(row, column, activePlayer.marker)
+    switchPlayerTurn()
+  }
+
+  return {
+    playRound,
+    getActivePlayer,
+    getBoard: board.getBoard
+  }
 }

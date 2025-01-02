@@ -14,6 +14,14 @@
   width: 300px;
   aspect-ratio: 1 / 1;
   grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+}
+
+.grid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 55px;
 }
 
 @media only screen and (min-width: 992px) {
@@ -29,9 +37,12 @@
     grid-template-columns: 1fr 1fr 1fr;
     justify-items: center;
   }
-  
+
   #board {
     width: 400px;
-    font-size: 13vh;
+  }
+
+  .grid {
+    font-size: 75px;
   }
 }
