@@ -63,3 +63,49 @@ function GameController() {
     getBoard: board.getBoard
   }
 }
+
+function ScreenController() {
+  const game = GameController()
+  const playerTurnDiv = document.getElementById('turn')
+  const boardDiv = document.getElementById('board')
+
+  const updateScreen = () => {
+    boardDiv.textContent = ''
+
+    const board = game.getBoard()
+    const activePlayer = game.getActivePlayer()
+
+    playerTurnDiv.textContent = `${activePlayer.name}'s turn`
+    if (activePlayer.name === 'Player 1') {
+      playerTurnDiv.classList.remove('btn-danger')
+      playerTurnDiv.classList.add('btn-primary')
+    } else if (activePlayer.name === 'Player 2') {
+      playerTurnDiv.classList.remove('btn-primary')
+      playerTurnDiv.classList.add('btn-danger')
+    }
+
+    board.forEach((row, rowIndex) => {
+      row.forEach((grid, colIndex) => {
+        const gridBtn = document.createElement('button')
+        gridBtn.classList.add('btn', 'btn-dark', 'grid')
+        gridBtn.dataset.index = `${rowIndex}${colIndex}`
+        gridBtn.textContent = grid.getValue()
+        boardDiv.appendChild(gridBtn)
+      })
+    })
+  }
+
+  function clickHandlerBoard(e) {
+    const selectedGrid = e.target.dataset.index
+
+    if (!selectedGrid) return
+
+    game.playRound(selectedGrid)
+    updateScreen()
+  }
+  boardDiv.addEventListener('click', clickHandlerBoard)
+
+  updateScreen()
+}
+
+ScreenController()
