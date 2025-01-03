@@ -1,12 +1,7 @@
 function GameBoard() {
-  const board = []
-
-  for (let i = 0; i < 3; i++) {
-    board[i] = []
-    for (let j = 0; j < 3; j++) {
-      board[i][j] = Grid()
-    }
-  }
+  const board = Array.from(
+    { length: 3 }, () => Array(3).fill(null).map(() => Grid())
+  )
 
   const getBoard = () => board
 
@@ -84,12 +79,13 @@ function GameController() {
     const grid = document.querySelector(`[data-index='${selectedGrid}']`)
     if (grid.textContent === '') {
       board.placeMarker(row, column, activePlayer.marker)
-      if (
-        getThreeInRow() ||
-        board.getBoard().flat().every(grid => grid.getValue() !== '')
-      ) {
-        matchOver = true
-      }
+
+      const hasThreeInRow = getThreeInRow()
+      const boardFull = board.getBoard().flat().every(
+        grid => grid.getValue() !== ''
+      )
+      if (hasThreeInRow || boardFull) matchOver = true
+
       if (!matchOver) switchPlayerTurn()
     }
   }
@@ -106,11 +102,9 @@ function GameController() {
 function ScreenController() {
   const game = GameController()
   const boardDiv = document.getElementById('board')
-  
-  const updateScreen = () => {
+
+  const renderBoard = () => {
     const board = game.getBoard()
-    const playerTurnDiv = document.getElementById('turn')
-    const activePlayer = game.getActivePlayer()
 
     boardDiv.textContent = ''
 
@@ -123,34 +117,50 @@ function ScreenController() {
         boardDiv.appendChild(gridBtn)
       })
     })
-    
-    if (!game.getMatchOver()) {
-      playerTurnDiv.textContent = `${activePlayer.name}'s turn`
-      if (activePlayer.name === 'Player 1') {
-        playerTurnDiv.classList.remove('btn-danger')
-        playerTurnDiv.classList.add('btn-primary')
-      } else if (activePlayer.name === 'Player 2') {
-        playerTurnDiv.classList.remove('btn-primary')
-        playerTurnDiv.classList.add('btn-danger')
-      }
+  }
+  
+  const updateTurn = (playerTurnDiv, playerName) => {
+    playerTurnDiv.textContent = `${playerName}'s turn`  
+    if (playerName === 'Player 1') {
+      playerTurnDiv.classList.remove('btn-danger')
+      playerTurnDiv.classList.add('btn-primary')
+    } else if (playerName === 'Player 2') {
+      playerTurnDiv.classList.remove('btn-primary')
+      playerTurnDiv.classList.add('btn-danger')
+    }
+  }
+  
+  const handleMatchOver = (playerTurnDiv, playerName) => {
+    const winningGrids = game.getThreeInRow()
+
+    if (winningGrids) {
+      winningGrids.forEach(grid => {
+        const gridBtn = document.querySelector(`[data-index='${grid}']`)
+        gridBtn.classList.remove('btn-dark')
+        if (playerName === 'Player 1') {
+          gridBtn.classList.add('btn-primary')
+        } else {
+          gridBtn.classList.add('btn-danger')
+        }
+      })
+      playerTurnDiv.textContent = `${playerName} wins!`
     } else {
-      const winningGrids = game.getThreeInRow()
-      if (winningGrids) {
-        winningGrids.forEach(grid => {
-          const gridBtn = document.querySelector(`[data-index='${grid}']`)
-          gridBtn.classList.remove('btn-dark')
-          if (activePlayer.name === 'Player 1') {
-            gridBtn.classList.add('btn-primary')
-          } else {
-            gridBtn.classList.add('btn-danger')
-          }
-        })
-        playerTurnDiv.textContent = `${activePlayer.name} wins!`
-      } else {
-        playerTurnDiv.textContent = 'Draw'
-        playerTurnDiv.classList.remove('btn-primary', 'btn-danger')
-        playerTurnDiv.classList.add('btn-secondary')
-      }
+      playerTurnDiv.textContent = 'Draw'
+      playerTurnDiv.classList.remove('btn-primary', 'btn-danger')
+      playerTurnDiv.classList.add('btn-secondary')
+    }
+  }
+
+  const updateScreen = () => {
+    const playerTurnDiv = document.getElementById('turn')
+    const playerName = game.getActivePlayer().name
+
+    renderBoard()
+  
+    if (game.getMatchOver()) {
+      handleMatchOver(playerTurnDiv, playerName)
+    } else {
+      updateTurn(playerTurnDiv, playerName)
     }
   }
 
