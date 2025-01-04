@@ -19,21 +19,21 @@
   <section class="d-lg-grid justify-content-evenly">
     <div class="d-flex justify-content-evenly my-3 d-lg-none">
       <div class="btn-group-vertical">
-        <div class="btn btn-primary fs-3">Player 1</div>
+        <div class="btn btn-primary fs-3" data-bs-toggle="modal" data-bs-target="#player-one-modal" id="player-one-scoreboard-name-sm">Player 1</div>
         <div class="btn btn-outline-primary fs-2">0</div>
       </div>
       <div class="btn-group-vertical">
-        <div class="btn btn-danger fs-3">Player 2</div>
+        <div class="btn btn-danger fs-3" data-bs-toggle="modal" data-bs-target="#player-two-modal" id="player-two-scoreboard-name-sm">Player 2</div>
         <div class="btn btn-outline-danger fs-2">0</div>
       </div>
     </div>
     <div class="btn-group-vertical d-none d-lg-block mt-5 pt-5">
-      <div class="btn btn-primary fs-3">Player 1</div>
+      <div class="btn btn-primary fs-3" data-bs-toggle="modal" data-bs-target="#player-one-modal" id="player-one-scoreboard-name-lg">Player 1</div>
       <div class="btn btn-outline-primary fs-2">0</div>
     </div>
     <div class="d-flex flex-column align-items-center">
       <div class="d-flex justify-content-center my-3">
-        <span class="btn btn-primary fs-2 fw-bold rounded-pill" id="turn"></span>
+        <span class="btn btn-primary fs-2 fw-bold rounded-pill" id="info"></span>
       </div>
       <div class="d-grid gap-1" id="board"></div>
       <div class="d-flex justify-content-center gap-5 my-3 mb-5">
@@ -42,9 +42,52 @@
       </div>
     </div>
     <div class="btn-group-vertical d-none d-lg-block mt-5 pt-5">
-      <div class="btn btn-danger fs-3">Player 2</div>
+      <div class="btn btn-danger fs-3" data-bs-toggle="modal" data-bs-target="#player-two-modal" id="player-two-scoreboard-name-lg">Player 2</div>
       <div class="btn btn-outline-danger fs-2">0</div>
     </div>
+    <div class="modal fade" id="player-one-modal">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-primary">
+          <div class="modal-header">
+            <span class="modal-title fs-1 fw-bold">Player 1</span>
+          </div>
+          <div class="modal-body">
+            <form id="player-one-form">
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="new-name-1" placeholder>
+                <label for="new-name-1">New Name</label>
+              </div>
+              <div class="d-flex justify-content-center gap-3">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Confirm</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="player-two-modal">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-danger">
+          <div class="modal-header">
+            <span class="modal-title fs-1 fw-bold">Player 2</span>
+          </div>
+          <div class="modal-body">
+            <form id="player-two-form">
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="new-name-2" placeholder>
+                <label for="new-name-2">New Name</label>
+              </div>
+              <div class="d-flex justify-content-center gap-3">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Confirm</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    
   </section>
   <footer class="bg-dark text-white text-center fixed-bottom fw-bold p-2">
     Copyright © 2025 Derek Lim

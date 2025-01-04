@@ -6,7 +6,7 @@
   width: 150px;
 }
 
-#turn {
+#info {
   width: 300px;
 }
 
@@ -24,12 +24,16 @@
   font-size: 55px;
 }
 
+.modal-header {
+  margin: 0 auto;
+}
+
 @media only screen and (min-width: 992px) {
   .btn-group-vertical {
     width: 230px;
   }
 
-  #turn {
+  #info {
     width: 420px;
   }
 
