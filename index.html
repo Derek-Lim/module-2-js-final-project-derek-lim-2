@@ -52,9 +52,9 @@
             <span class="modal-title fs-1 fw-bold">Player 1</span>
           </div>
           <div class="modal-body">
-            <form id="player-one-form">
+            <form class="needs-validation" id="player-one-form">
               <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="new-name-1" placeholder>
+                <input type="text" class="form-control" id="new-name-1" minlength="2" maxlength="10" pattern="[A-Za-z]\w+" placeholder required>
                 <label for="new-name-1">New Name</label>
               </div>
               <div class="d-flex justify-content-center gap-3">
@@ -73,9 +73,9 @@
             <span class="modal-title fs-1 fw-bold">Player 2</span>
           </div>
           <div class="modal-body">
-            <form id="player-two-form">
+            <form class="needs-validation" id="player-two-form">
               <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="new-name-2" placeholder>
+                <input type="text" class="form-control" id="new-name-2" minlength="2" maxlength="10" pattern="[A-Za-z]\w+" placeholder required>
                 <label for="new-name-2">New Name</label>
               </div>
               <div class="d-flex justify-content-center gap-3">
