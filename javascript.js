@@ -53,29 +53,18 @@ function GameController() {
   const changePlayerName = (e) => {
     e.preventDefault()
     const name = e.target.querySelector('input').value
-
-    if (e.target.id === 'player-one-form') {
-      if (players[1].name !== name) {
-        players[0].name = name
-        bootstrap.Modal
-          .getInstance(document.getElementById('player-one-modal'))
-          .hide()
-        return true
-      } else {
-        alert('Pick a different name from player 2')
-        return false
-      }
-    } else if (e.target.id === 'player-two-form') {
-      if (players[0].name !== name) {
-        players[1].name = name
-        bootstrap.Modal
-          .getInstance(document.getElementById('player-two-modal'))
-          .hide()
-        return true
-      } else {
-        alert('Pick a different name from player 1')
-        return false
-      }
+    const playerIndex = e.target.id === 'player-one-form' ? 0 : 1
+    const otherPlayerIndex = 1 - playerIndex
+    const modalId = e.target.id === 'player-one-form' ? 'player-one-modal' :
+                                                        'player-two-modal'
+  
+    if (players[otherPlayerIndex].name !== name) {
+      players[playerIndex].name = name
+      bootstrap.Modal.getInstance(document.getElementById(modalId)).hide()
+      return true
+    } else {
+      alert(`Pick a different name from player ${otherPlayerIndex + 1}`)
+      return false
     }
   }
 
@@ -155,7 +144,8 @@ function ScreenController() {
   }
 
   const updateName = (e) => {
-    if (game.changePlayerName(e)) {
+    const playerNameChanged = game.changePlayerName(e)
+    if (playerNameChanged) {
       updateScoreboardName(e)
       updateScreen()
     }
