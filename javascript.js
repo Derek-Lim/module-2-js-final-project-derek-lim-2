@@ -55,15 +55,27 @@ function GameController() {
     const name = e.target.querySelector('input').value
 
     if (e.target.id === 'player-one-form') {
-      players[0].name = name
-      bootstrap.Modal
-        .getInstance(document.getElementById('player-one-modal'))
-        .hide()
+      if (players[1].name !== name) {
+        players[0].name = name
+        bootstrap.Modal
+          .getInstance(document.getElementById('player-one-modal'))
+          .hide()
+        return true
+      } else {
+        alert('Pick a different name from player 2')
+        return false
+      }
     } else if (e.target.id === 'player-two-form') {
-      players[1].name = name
-      bootstrap.Modal
-      .getInstance(document.getElementById('player-two-modal'))
-      .hide()
+      if (players[0].name !== name) {
+        players[1].name = name
+        bootstrap.Modal
+          .getInstance(document.getElementById('player-two-modal'))
+          .hide()
+        return true
+      } else {
+        alert('Pick a different name from player 1')
+        return false
+      }
     }
   }
 
@@ -120,6 +132,8 @@ function GameController() {
 function ScreenController() {
   const game = GameController()
   const boardDiv = document.getElementById('board')
+  const playerOneModal = document.getElementById('player-one-modal')
+  const playerTwoModal = document.getElementById('player-two-modal')
   const playerOneForm = document.getElementById('player-one-form')
   const playerTwoForm = document.getElementById('player-two-form')
 
@@ -141,9 +155,10 @@ function ScreenController() {
   }
 
   const updateName = (e) => {
-    game.changePlayerName(e)
-    updateScoreboardName(e)
-    updateScreen()
+    if (game.changePlayerName(e)) {
+      updateScoreboardName(e)
+      updateScreen()
+    }
   }
 
   const renderBoard = () => {
@@ -219,6 +234,12 @@ function ScreenController() {
   boardDiv.addEventListener('click', clickHandlerBoard)
   playerOneForm.addEventListener('submit', updateName)
   playerTwoForm.addEventListener('submit', updateName)
+  playerOneModal.addEventListener('hidden.bs.modal', (e) => {
+    playerOneForm.querySelector('input').value = ''
+  })
+  playerTwoModal.addEventListener('hidden.bs.modal', (e) => {
+    playerTwoForm.querySelector('input').value = ''
+  })
 
   updateScreen()
 }
