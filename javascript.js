@@ -50,15 +50,17 @@ function GameController() {
 
   const getActivePlayer = () => activePlayer
 
-  const changePlayerName = (e) => {
-    e.preventDefault()
-    const name = e.target.querySelector('input').value
-    const playerIndex = e.target.id === 'player-one-form' ? 0 : 1
+  const changePlayerName = (id, name) => {
+    if (id === 'player-one-form') {
+      var playerIndex = 0
+      var modalId = 'player-one-modal'
+    } else if (id === 'player-two-form') {
+      var playerIndex = 1
+      var modalId = 'player-two-modal'
+    }
     const otherPlayerIndex = 1 - playerIndex
-    const modalId = e.target.id === 'player-one-form' ? 'player-one-modal' :
-                                                        'player-two-modal'
   
-    if (players[otherPlayerIndex].name !== name) {
+    if (players[otherPlayerIndex].name.toLowerCase() !== name.toLowerCase()) {
       players[playerIndex].name = name
       bootstrap.Modal.getInstance(document.getElementById(modalId)).hide()
       return true
@@ -126,27 +128,29 @@ function ScreenController() {
   const playerOneForm = document.getElementById('player-one-form')
   const playerTwoForm = document.getElementById('player-two-form')
 
-  const updateScoreboardName = (e) => {
-    e.preventDefault()
-    const name = e.target.querySelector('input').value
-
-    if (e.target.id === 'player-one-form') {
+  const updateScoreboardName = (id, newName) => {
+    if (id === 'player-one-form') {
       const p1Small = document.getElementById('player-one-scoreboard-name-sm')
       const p1Large = document.getElementById('player-one-scoreboard-name-lg')
-      p1Small.textContent = name
-      p1Large.textContent = name
-    } else if (e.target.id === 'player-two-form') {
+      p1Small.textContent = newName
+      p1Large.textContent = newName
+    } else if (id === 'player-two-form') {
       const p2Small = document.getElementById('player-two-scoreboard-name-sm')
       const p2Large = document.getElementById('player-two-scoreboard-name-lg')
-      p2Small.textContent = name
-      p2Large.textContent = name
+      p2Small.textContent = newName
+      p2Large.textContent = newName
     }
   }
 
   const updateName = (e) => {
-    const playerNameChanged = game.changePlayerName(e)
-    if (playerNameChanged) {
-      updateScoreboardName(e)
+    e.preventDefault()
+
+    const id = e.target.id
+    const name = e.target.querySelector('input').value
+
+    const nameChanged = game.changePlayerName(id, name)
+    if (nameChanged) {
+      updateScoreboardName(id, name)
       updateScreen()
     }
   }
