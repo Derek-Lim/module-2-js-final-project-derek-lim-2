@@ -62,6 +62,10 @@ function GameController() {
     player.score++
   }
 
+  const resetScore = () => {
+    players.forEach(player => player.score = 0)
+  }
+
   const changePlayerName = (id, name) => {
     if (id === 'player-one-form') {
       var playerIndex = 0
@@ -122,21 +126,22 @@ function GameController() {
     }
   }
 
-  const resetGame = () => {
+  const resetMatch = () => {
     board.clearBoard()
     matchOver = false
     activePlayer = players[0]
   }
 
   return {
-    playRound,
-    getActivePlayer,
+    getBoard: board.getBoard,
     getMatchOver,
-    getThreeInRow,
-    changePlayerName,
-    resetGame,
+    getActivePlayer,
     incrementScore,
-    getBoard: board.getBoard
+    resetScore,
+    changePlayerName,
+    getThreeInRow,
+    playRound,
+    resetMatch,
   }
 }
 
@@ -144,10 +149,11 @@ function ScreenController() {
   const game = GameController()
   const boardDiv = document.getElementById('board')
   const newMatchBtn = document.getElementById('new-match-btn')
-  const playerOneModal = document.getElementById('player-one-modal')
-  const playerTwoModal = document.getElementById('player-two-modal')
+  const resetBtn = document.getElementById('reset-btn')
   const playerOneForm = document.getElementById('player-one-form')
   const playerTwoForm = document.getElementById('player-two-form')
+  const playerOneModal = document.getElementById('player-one-modal')
+  const playerTwoModal = document.getElementById('player-two-modal')
 
   const updateScoreboardName = (id, newName) => {
     if (id === 'player-one-form') {
@@ -191,22 +197,6 @@ function ScreenController() {
       updateInfoName(id, name)
     }
   }
-
-  const renderBoard = () => {
-    const board = game.getBoard()
-
-    boardDiv.textContent = ''
-
-    board.forEach((row, rowIndex) => {
-      row.forEach((grid, colIndex) => {
-        const gridBtn = document.createElement('button')
-        gridBtn.classList.add('btn', 'btn-dark', 'grid')
-        gridBtn.dataset.index = `${rowIndex}${colIndex}`
-        gridBtn.textContent = grid.getValue()
-        boardDiv.appendChild(gridBtn)
-      })
-    })
-  }
   
   const updateTurn = (infoDiv, name, marker) => {
     infoDiv.textContent = `${name}'s turn`  
@@ -232,6 +222,47 @@ function ScreenController() {
     }
   }
 
+  const updateBoard = () => {
+    const board = game.getBoard()
+
+    boardDiv.textContent = ''
+
+    board.forEach((row, rowIndex) => {
+      row.forEach((grid, colIndex) => {
+        const gridBtn = document.createElement('button')
+        gridBtn.classList.add('btn', 'btn-dark', 'grid')
+        gridBtn.dataset.index = `${rowIndex}${colIndex}`
+        gridBtn.textContent = grid.getValue()
+        boardDiv.appendChild(gridBtn)
+      })
+    })
+  }
+
+  const updateScoreboard = (player) => {
+    if (player.marker === 'X') {
+      const p1Small = document.getElementById('player-one-score-sm')
+      const p1Large = document.getElementById('player-one-score-lg')
+      p1Small.textContent = player.score
+      p1Large.textContent = player.score
+    } else {
+      const p2Small = document.getElementById('player-two-score-sm')
+      const p2Large = document.getElementById('player-two-score-lg')
+      p2Small.textContent = player.score
+      p2Large.textContent = player.score
+    }
+  }
+
+  const clearScoreboard = () => {
+    const p1Small = document.getElementById('player-one-score-sm')
+    const p1Large = document.getElementById('player-one-score-lg')
+    const p2Small = document.getElementById('player-two-score-sm')
+    const p2Large = document.getElementById('player-two-score-lg')
+    p1Small.textContent = 0
+    p1Large.textContent = 0
+    p2Small.textContent = 0
+    p2Large.textContent = 0
+  }
+
   const announceResult = (infoDiv, name, marker, winningGrids) => {
     if (winningGrids) {
       winningGrids.forEach(grid => {
@@ -251,20 +282,6 @@ function ScreenController() {
     }
   }
 
-  const updateScoreboard = (player) => {
-    if (player.marker === 'X') {
-      const p1Small = document.getElementById('player-one-score-sm')
-      const p1Large = document.getElementById('player-one-score-lg')
-      p1Small.textContent = player.score
-      p1Large.textContent = player.score
-    } else {
-      const p2Small = document.getElementById('player-two-score-sm')
-      const p2Large = document.getElementById('player-two-score-lg')
-      p2Small.textContent = player.score
-      p2Large.textContent = player.score
-    }
-  }
-
   const handleMatchOver = (infoDiv, player) => {
     const winningGrids = game.getThreeInRow()
 
@@ -279,7 +296,7 @@ function ScreenController() {
     const infoDiv = document.getElementById('info')
     const player = game.getActivePlayer()
 
-    renderBoard()
+    updateBoard()
     updateNewMatchBtn()
   
     if (game.getMatchOver()) {
@@ -290,8 +307,13 @@ function ScreenController() {
   }
 
   const newMatch = () => {
-    game.resetGame()
+    game.resetMatch()
     updateScreen()
+  }
+
+  const newScore = () => {
+    game.resetScore()
+    clearScoreboard()
   }
 
   function clickHandlerBoard(e) {
@@ -304,6 +326,7 @@ function ScreenController() {
   }
   boardDiv.addEventListener('click', clickHandlerBoard)
   newMatchBtn.addEventListener('click', newMatch)
+  resetBtn.addEventListener('click', newScore)
   playerOneForm.addEventListener('submit', updateName)
   playerTwoForm.addEventListener('submit', updateName)
   playerOneModal.addEventListener('hidden.bs.modal', (e) => {
