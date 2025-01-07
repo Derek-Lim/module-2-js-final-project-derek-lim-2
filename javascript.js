@@ -40,11 +40,13 @@ function GameController() {
   const players = [
     {
       name: 'Player 1',
-      marker: 'X'
+      marker: 'X',
+      score: 0
     },
     {
       name: 'Player 2',
-      marker: 'O'
+      marker: 'O',
+      score: 0
     }
   ]
 
@@ -56,11 +58,15 @@ function GameController() {
 
   const getActivePlayer = () => activePlayer
 
+  const incrementScore = (player) => {
+    player.score++
+  }
+
   const changePlayerName = (id, name) => {
     if (id === 'player-one-form') {
       var playerIndex = 0
       var modal = document.getElementById('player-one-modal')
-    } else if (id === 'player-two-form') {
+    } else {
       var playerIndex = 1
       var modal = document.getElementById('player-two-modal')
     }
@@ -129,6 +135,7 @@ function GameController() {
     getThreeInRow,
     changePlayerName,
     resetGame,
+    incrementScore,
     getBoard: board.getBoard
   }
 }
@@ -148,11 +155,27 @@ function ScreenController() {
       const p1Large = document.getElementById('player-one-scoreboard-name-lg')
       p1Small.textContent = newName
       p1Large.textContent = newName
-    } else if (id === 'player-two-form') {
+    } else {
       const p2Small = document.getElementById('player-two-scoreboard-name-sm')
       const p2Large = document.getElementById('player-two-scoreboard-name-lg')
       p2Small.textContent = newName
       p2Large.textContent = newName
+    }
+  }
+
+  const updateInfoName = (id, name) => {
+    const player = game.getActivePlayer()
+    const infoDiv = document.getElementById('info')
+
+    if (
+      id === 'player-one-form' && player.marker === 'X' ||
+      id === 'player-two-form' && player.marker === 'O'
+    ) {
+      if (!game.getMatchOver()) {
+        infoDiv.textContent = `${name}'s turn`
+      } else if (game.getThreeInRow()) {
+        infoDiv.textContent = `${name} wins!`
+      }
     }
   }
 
@@ -165,7 +188,7 @@ function ScreenController() {
     const nameChanged = game.changePlayerName(id, name)
     if (nameChanged) {
       updateScoreboardName(id, name)
-      updateScreen()
+      updateInfoName(id, name)
     }
   }
 
@@ -190,7 +213,7 @@ function ScreenController() {
     if (marker === 'X') {
       infoDiv.classList.remove('btn-danger', 'btn-secondary')
       infoDiv.classList.add('btn-primary')
-    } else if (marker === 'O') {
+    } else {
       infoDiv.classList.remove('btn-primary', 'btn-secondary')
       infoDiv.classList.add('btn-danger')
     }
@@ -209,16 +232,14 @@ function ScreenController() {
     }
   }
 
-  const announceResult = (infoDiv, name, marker) => {
-    const winningGrids = game.getThreeInRow()
-
+  const announceResult = (infoDiv, name, marker, winningGrids) => {
     if (winningGrids) {
       winningGrids.forEach(grid => {
         const gridBtn = document.querySelector(`[data-index='${grid}']`)
         gridBtn.classList.remove('btn-dark')
         if (marker === 'X') {
           gridBtn.classList.add('btn-primary')
-        } else if (marker === 'O') {
+        } else {
           gridBtn.classList.add('btn-danger')
         }
       })
@@ -230,18 +251,41 @@ function ScreenController() {
     }
   }
 
+  const updateScoreboard = (player) => {
+    if (player.marker === 'X') {
+      const p1Small = document.getElementById('player-one-score-sm')
+      const p1Large = document.getElementById('player-one-score-lg')
+      p1Small.textContent = player.score
+      p1Large.textContent = player.score
+    } else {
+      const p2Small = document.getElementById('player-two-score-sm')
+      const p2Large = document.getElementById('player-two-score-lg')
+      p2Small.textContent = player.score
+      p2Large.textContent = player.score
+    }
+  }
+
+  const handleMatchOver = (infoDiv, player) => {
+    const winningGrids = game.getThreeInRow()
+
+    if (winningGrids) {
+      game.incrementScore(player)
+      updateScoreboard(player)
+    }
+    announceResult(infoDiv, player.name, player.marker, winningGrids)
+  }
+
   const updateScreen = () => {
     const infoDiv = document.getElementById('info')
-    const name = game.getActivePlayer().name
-    const marker = game.getActivePlayer().marker
+    const player = game.getActivePlayer()
 
     renderBoard()
     updateNewMatchBtn()
   
     if (game.getMatchOver()) {
-      announceResult(infoDiv, name, marker)
+      handleMatchOver(infoDiv, player)
     } else {
-      updateTurn(infoDiv, name, marker)
+      updateTurn(infoDiv, player.name, player.marker)
     }
   }
 
