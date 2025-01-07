@@ -9,7 +9,13 @@ function GameBoard() {
     board[row][column].markGrid(marker)
   }
 
-  return { getBoard, placeMarker }
+  const clearBoard = () => {
+    board.forEach((row, rowIndex) => {
+      row.forEach((_, colIndex) => placeMarker(rowIndex, colIndex, ''))
+    })
+  }
+
+  return { getBoard, placeMarker, clearBoard }
 }
 
 function Grid() {
@@ -53,16 +59,16 @@ function GameController() {
   const changePlayerName = (id, name) => {
     if (id === 'player-one-form') {
       var playerIndex = 0
-      var modalId = 'player-one-modal'
+      var modal = document.getElementById('player-one-modal')
     } else if (id === 'player-two-form') {
       var playerIndex = 1
-      var modalId = 'player-two-modal'
+      var modal = document.getElementById('player-two-modal')
     }
     const otherPlayerIndex = 1 - playerIndex
   
     if (players[otherPlayerIndex].name.toLowerCase() !== name.toLowerCase()) {
       players[playerIndex].name = name
-      bootstrap.Modal.getInstance(document.getElementById(modalId)).hide()
+      bootstrap.Modal.getInstance(modal).hide()
       return true
     } else {
       alert(`Pick a different name from player ${otherPlayerIndex + 1}`)
@@ -110,12 +116,19 @@ function GameController() {
     }
   }
 
+  const resetGame = () => {
+    board.clearBoard()
+    matchOver = false
+    activePlayer = players[0]
+  }
+
   return {
     playRound,
     getActivePlayer,
     getMatchOver,
     getThreeInRow,
     changePlayerName,
+    resetGame,
     getBoard: board.getBoard
   }
 }
@@ -123,6 +136,7 @@ function GameController() {
 function ScreenController() {
   const game = GameController()
   const boardDiv = document.getElementById('board')
+  const newMatchBtn = document.getElementById('new-match-btn')
   const playerOneModal = document.getElementById('player-one-modal')
   const playerTwoModal = document.getElementById('player-two-modal')
   const playerOneForm = document.getElementById('player-one-form')
@@ -174,14 +188,27 @@ function ScreenController() {
   const updateTurn = (infoDiv, name, marker) => {
     infoDiv.textContent = `${name}'s turn`  
     if (marker === 'X') {
-      infoDiv.classList.remove('btn-danger')
+      infoDiv.classList.remove('btn-danger', 'btn-secondary')
       infoDiv.classList.add('btn-primary')
     } else if (marker === 'O') {
-      infoDiv.classList.remove('btn-primary')
+      infoDiv.classList.remove('btn-primary', 'btn-secondary')
       infoDiv.classList.add('btn-danger')
     }
   }
-  
+
+  const updateNewMatchBtn = () => {
+    const newMatchBtn = document.getElementById('new-match-btn')
+    if (game.getMatchOver()) {
+      newMatchBtn.textContent = 'New Match'
+      newMatchBtn.classList.remove('btn-info')
+      newMatchBtn.classList.add('btn-success')
+    } else {
+      newMatchBtn.textContent = 'Restart Match'
+      newMatchBtn.classList.remove('btn-success')
+      newMatchBtn.classList.add('btn-info')
+    }
+  }
+
   const announceResult = (infoDiv, name, marker) => {
     const winningGrids = game.getThreeInRow()
 
@@ -209,12 +236,18 @@ function ScreenController() {
     const marker = game.getActivePlayer().marker
 
     renderBoard()
+    updateNewMatchBtn()
   
     if (game.getMatchOver()) {
       announceResult(infoDiv, name, marker)
     } else {
       updateTurn(infoDiv, name, marker)
     }
+  }
+
+  const newMatch = () => {
+    game.resetGame()
+    updateScreen()
   }
 
   function clickHandlerBoard(e) {
@@ -226,6 +259,7 @@ function ScreenController() {
     }
   }
   boardDiv.addEventListener('click', clickHandlerBoard)
+  newMatchBtn.addEventListener('click', newMatch)
   playerOneForm.addEventListener('submit', updateName)
   playerTwoForm.addEventListener('submit', updateName)
   playerOneModal.addEventListener('hidden.bs.modal', (e) => {
