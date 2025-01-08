@@ -316,7 +316,7 @@ function ScreenController() {
     clearScoreboard()
   }
 
-  function clickHandlerBoard(e) {
+  const clickHandlerBoard = (e) => {
     if (!game.getMatchOver()) {
       const selectedGrid = e.target.dataset.index
       if (!selectedGrid) return
@@ -324,19 +324,23 @@ function ScreenController() {
       updateScreen()
     }
   }
-  boardDiv.addEventListener('click', clickHandlerBoard)
-  newMatchBtn.addEventListener('click', newMatch)
-  resetBtn.addEventListener('click', newScore)
-  playerOneForm.addEventListener('submit', updateName)
-  playerTwoForm.addEventListener('submit', updateName)
-  playerOneModal.addEventListener('hidden.bs.modal', (e) => {
-    playerOneForm.querySelector('input').value = ''
-  })
-  playerTwoModal.addEventListener('hidden.bs.modal', (e) => {
-    playerTwoForm.querySelector('input').value = ''
-  })
+
+  const loadEventListeners = () => {
+    boardDiv.addEventListener('click', clickHandlerBoard)
+    newMatchBtn.addEventListener('click', newMatch)
+    resetBtn.addEventListener('click', newScore)
+    playerOneForm.addEventListener('submit', updateName)
+    playerTwoForm.addEventListener('submit', updateName)
+    playerOneModal.addEventListener('hidden.bs.modal', (e) => {
+      playerOneForm.querySelector('input').value = ''
+    })
+    playerTwoModal.addEventListener('hidden.bs.modal', (e) => {
+      playerTwoForm.querySelector('input').value = ''
+    })
+  }
 
   updateScreen()
+  loadEventListeners()
 }
 
 ScreenController()
